@@ -26,6 +26,7 @@ actions:
     chroot: true
     description: install plasma mobile
     packages:
+      - libqt6gui6-gles
       - plasma-mobile
       - kwin-wayland
       - qtwayland5
@@ -33,12 +34,15 @@ actions:
       - sddm-theme-debian-breeze
       - kwin-wayland
       - plasma-workspace
-      - firefox-esr
+      - falkon
+      - konsole
       - drihybris
+      - kinfocenter
+      - kscreen
 
   - action: apt
     chroot: true
-    description: install kde
+    description: install plasma mobile
     packages:
       - libqt5quick5-gles
       - qtbase5-gles-dev
