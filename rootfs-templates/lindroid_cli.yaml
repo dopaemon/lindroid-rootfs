@@ -1,0 +1,28 @@
+{{- $architecture := or .architecture "arm64" -}}
+{{- $suite := "trixie" -}}
+{{- $image := (printf "lindroid-rootfs-%s-cli.zip" $architecture) -}}
+{{- $version := or .version "nightly" -}}
+{{- $use_internal_repository := or .use_internal_repository "no" -}}
+
+{{- $username := or .username "lindroid" -}}
+{{- $password := or .password "lindroid" -}}
+{{- $hostname := or .hostname "lindroid" -}}
+
+architecture: {{ $architecture }}
+actions:
+
+  - action: recipe
+    description: create rootfs
+    recipe: lindroid_base.yaml
+    variables:
+      architecture: {{ $architecture }}
+      suite: {{ $suite }}
+      use_internal_repository: {{ $use_internal_repository }}
+      username: {{ $username }}
+      password: {{ $password }}
+      hostname: {{ $hostname }}
+
+  - action: run
+    chroot: false
+    description: Generate rootfs image
+    script: scripts/genimage.sh {{ $image }}

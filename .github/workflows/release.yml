@@ -2,7 +2,7 @@ name: lindroid rootfs-builder
 
 on:
   workflow_dispatch:
-      
+
 jobs:
   once:
     runs-on: ubuntu-24.04
@@ -82,8 +82,6 @@ jobs:
             registry.lindroid.org/lindroid/rootfs-builder:next-amd64 \
             /sbin/init)" >> $GITHUB_ENV
 
-
-
       - name: Build rootfs
         run: |
           docker exec $CONTAINER_HASH /bin/sh -c 'cd /buildd/sources; ./generate_recipe.py  && debos --disable-fakemachine generated/lindroid-${{ matrix.config.edition }}-${{ matrix.config.arch }}.yaml'
@@ -122,7 +120,7 @@ jobs:
           tag_name: nightly # tag name to delete
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - name: Tag snapshot
         if: startsWith(github.ref, 'refs/tags/lindroid') != true
         uses: tvdias/github-tagger@v0.0.1
