@@ -2,13 +2,7 @@ name: lindroid rootfs-builder
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - trixie
       
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   once:
     runs-on: ubuntu-24.04
@@ -127,14 +121,16 @@ jobs:
           delete_release: true # default: false
           tag_name: nightly # tag name to delete
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Tag snapshot
         if: startsWith(github.ref, 'refs/tags/lindroid') != true
         uses: tvdias/github-tagger@v0.0.1
         with:
-          repo-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           tag: nightly
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -159,7 +155,9 @@ jobs:
           tag_name: ${{ github.ref }}
           draft: true
           prerelease: false
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create nightly release
         id: create_nightly
@@ -170,7 +168,9 @@ jobs:
           tag_name: nightly
           draft: false
           prerelease: true
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   publish:
     runs-on: ubuntu-24.04
@@ -211,4 +211,6 @@ jobs:
           tag_name: nightly
           draft: false
           prerelease: true
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
