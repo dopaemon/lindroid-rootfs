@@ -5,8 +5,9 @@ on:
   push:
     branches:
       - trixie
-  schedule:
-    - cron: "59 23 * * *"
+      
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   once:
