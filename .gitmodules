@@ -1,3 +1,0 @@
-[submodule "rootfs-templates"]
-	path = rootfs-templates
-	url = https://github.com/Linux-on-droid/rootfs-templates
