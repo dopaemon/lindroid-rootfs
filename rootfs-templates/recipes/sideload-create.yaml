@@ -1,0 +1,39 @@
+{{- $architecture := or .architecture "arm64" -}}
+{{- $device_arch := or .device_arch $architecture -}}
+{{- $sideload_name := or .sideload_name "droidian-devtools_testbuild" -}}
+{{- $packages := or .packages "droidian-devtools openssh-server kgx hybris-usb" -}}
+{{- $tmpdir := or .tmpdir "/opt/.sideload-tmp-$sideload_name" -}}
+
+architecture: {{ $architecture }}
+actions:
+
+{{ if eq $architecture $device_arch }}
+
+  - action: run
+    chroot: true
+    description: Creating tmp directory
+    command: mkdir -p {{ $tmpdir }}
+
+  - action: run
+    chroot: true
+    description: Generating sideloads
+    command: package-sideload-create {{ $tmpdir }}/{{ $sideload_name }}.zip {{ $packages }}
+
+  - action: run
+    chroot: false
+    description: Extracting sideload zip from the rootfs
+    command: mv $(find . -maxdepth 1 -mindepth 1 -type d -name .debos-*)/root{{ $tmpdir }}/{{ $sideload_name }}.zip ./out
+
+  - action: run
+    chroot: true
+    description: Done, deleting tmp directory
+    command: rm -rf {{ $tmpdir }}
+
+{{ else }}
+
+  - action: run
+    chroot: true
+    description: Sideload skipped
+    command: echo "skipped."
+
+{{ end }}

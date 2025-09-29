@@ -1,0 +1,24 @@
+{{- $architecture := or .architecture "arm64" -}}
+{{- $suite := "trixie" -}}
+{{- $use_internal_repository := or .use_internal_repository "no" -}}
+
+architecture: {{ $architecture }}
+actions:
+
+  - action: debootstrap
+    suite: trixie
+    components:
+      - main
+    variant: minbase
+
+  - action: overlay
+    source: ../apt
+    description: Adding apt overlay
+    destination: /
+
+  - action: apt
+    chroot: true
+    description: install apt config
+    update: true
+    packages:
+      - ca-certificates

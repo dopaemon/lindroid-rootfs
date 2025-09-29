@@ -1,0 +1,16 @@
+{{- $architecture := or .architecture "amd64" -}}
+{{- $image := or .image "pleasesetimage" -}}
+{{- $output_type := or .output_type "image" -}}
+# Common final steps to complete image files
+
+architecture: {{ $architecture }}
+actions:
+  - action: run
+    descrption: Remove apt packages which are no longer unnecessary and delete downloaded packages
+    chroot: true
+    command: apt -y autoremove --purge && apt clean
+
+  - action: run
+    description: Build deconfiguration
+    chroot: true
+    script: ../scripts/build-configuration.sh deconfigure

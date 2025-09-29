@@ -1,0 +1,71 @@
+{{- $architecture := or .architecture "arm64" -}}
+{{- $suite := "trixie" -}}
+{{- $use_internal_repository := or .use_internal_repository "no" -}}
+
+{{- $username := or .username "lindroid" -}}
+{{- $password := or .password "lindroid" -}}
+{{- $hostname := or .hostname "lindroid" -}}
+
+architecture: {{ $architecture }}
+actions:
+
+  - action: recipe
+    description: Generate base rootfs
+    recipe: recipes/lindroid_base.yaml
+    variables:
+      architecture: {{ $architecture }}
+      suite: {{ $suite }}
+      use_internal_repository: {{ $use_internal_repository }}
+
+  - action: run
+    chroot: true
+    description: Add lindroid repo
+    command: echo "deb [trusted=yes] https://repo.lindroid.org/repository/lindroid trixie main" > /etc/apt/sources.list.d/lindroid-production.list
+
+  - action: apt
+    chroot: true
+    description: install packages
+    packages:
+      - create-disp
+      - libgbm-hybris
+      - libhybris
+      - libhybris-test
+      - lindroid-quirks
+      - nano
+      - strace
+      - sudo
+      - sddm
+      - adduser
+      - locales
+      - desktop-base
+      - evtest
+      - iproute2
+      - libpipewire-module-lindroid
+      - libcanberra-pulse
+      - pipewire-audio
+      - wireplumber
+      - pipewire-pulse
+      - pipewire-alsa
+      - pipewire-jack
+
+  - action: run
+    description: Set up default user
+    chroot: true
+    script: scripts/setup-user.sh {{ $username }} {{ $password }}
+
+  - action: run
+    description: Set up system
+    chroot: true
+    script: scripts/setup-system.sh {{ $hostname }}
+
+{{ if eq $architecture "armhf" }}
+  - action: run
+    chroot: true
+    description: add arm64 arch
+    command: dpkg --add-architecture arm64
+
+  - action: run
+    chroot: true
+    description: update repositories
+    command: apt update
+{{end}}
