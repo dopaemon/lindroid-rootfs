@@ -26,6 +26,9 @@ actions:
     chroot: true
     description: install kde
     packages:
+      - create-disp
+      - sddm
+      - desktop-base
       - libqt6gui6-gles
       - kde-full
       - kwin-wayland

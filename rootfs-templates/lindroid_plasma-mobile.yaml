@@ -26,6 +26,9 @@ actions:
     chroot: true
     description: install plasma mobile
     packages:
+      - create-disp
+      - sddm
+      - desktop-base
       - libqt6gui6-gles
       - plasma-mobile
       - kwin-wayland
